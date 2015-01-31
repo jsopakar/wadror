@@ -3,7 +3,9 @@ class Beer < ActiveRecord::Base
   has_many :ratings, dependent: :destroy
 
   def average_rating
-    ratings.average(:score)
+    #ratings.average(:score)
+    return 0 if ratings.empty?
+    ratings.map{ |r| r.score }.sum / ratings.count.to_f
   end
 
   def to_s
