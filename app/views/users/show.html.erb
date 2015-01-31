@@ -1,9 +1,25 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Username:</strong>
-  <%= @user.username %>
-</p>
+<h2><%= @user.username %> </h2>
 
+has made <%= @user.ratings.count %> ratings.
+<br>
+average rating: <%= 'TODO' %>
+
+
+
+<h3>ratings</h3>
+
+<ul>
+  <% @user.ratings.each do |r| %>
+    <li><%= r.beer.name %>, <%= r.score %> <%= link_to 'delete', "/ratings/#{r.id}", method: :delete  %> </li>
+
+
+  <% end %>
+</ul>
+
+
+<p>
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
+</p>
