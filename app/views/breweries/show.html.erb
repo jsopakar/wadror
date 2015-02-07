@@ -2,19 +2,29 @@
 
 <h2><%= @brewery.name %></h2>
 
-<p>
-  <i>Established at <%= @brewery.year %></i>
+<em>
+  established in
+  <%= @brewery.year %>
+</em>
+
+<p> Number of beers
+  <%= @brewery.beers.count %>
 </p>
 
-<p>Number of beers: <%= @brewery.beers.count %> </p> 
+<ul>
+ <% @brewery.beers.each do |brewery| %>
+  <li>
+    <%= link_to brewery.name, brewery %>
+  </li>
+ <% end %>
+</ul>
 
-<p>
-  <% @brewery.beers.each do |beer| %>
-    <%= link_to beer.name, beer %>
-  <% end %>
-</p>
+<% if @brewery.ratings.empty? %>
+  beers of the brewery has not yet been rated!
+<% else %>
+  Has <%= pluralize(@brewery.ratings.count, 'rating') %>, average <%= @brewery.average_rating %>
+<% end %>
 
+<br>
 
-
-<%= link_to 'Edit', edit_brewery_path(@brewery) %> |
-<%= link_to 'Back', breweries_path %>
+<%= link_to 'Edit', edit_brewery_path(@brewery) %>

@@ -1,4 +1,0 @@
-== README
-
-Heroku-instanssin perus-url:
-https://damp-savannah-1806.herokuapp.com/
