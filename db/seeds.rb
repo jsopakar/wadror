@@ -9,3 +9,7 @@ b2.beers.create name:"Huvila Pale Ale", style:"Pale Ale"
 b2.beers.create name:"X Porter", style:"Porter"
 b3.beers.create name:"Hefezeizen", style:"Weizen"
 b3.beers.create name:"Helles", style:"Lager"
+
+u1 = User.create username:"arto", password:"Arto1", password_confirmation:"Arto1"
+u2 = User.create username:"janne", password:"Janne1", password_confirmation:"Janne1"
+
