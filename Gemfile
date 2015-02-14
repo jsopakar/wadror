@@ -8,17 +8,6 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-group :development, :test do
-  gem 'rspec-rails', '~> 3.0'
-end
-
-group :test do
-  gem 'factory_girl_rails'
-  gem 'capybara'
-  gem 'launchy'
-  gem 'simplecov', require: false
-end
-
 group :production do
    gem 'pg'
    gem 'rails_12factor'
@@ -52,6 +41,19 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.1'
+  gem 'rspec-its'
+end
+
+
+group :test do
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'launchy'
+  gem 'simplecov', require: false
 end
 
 # Use ActiveModel has_secure_password

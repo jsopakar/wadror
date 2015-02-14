@@ -14,7 +14,7 @@ class RatingsController < ApplicationController
     if current_user.nil?
       redirect_to signin_path, notice:'you should be signed in'
     elsif @rating.save
-      current_user.ratings << @rating
+      current_user.ratings << @rating  ## virheen aiheuttanut rivi
       redirect_to user_path current_user
     else
       @beers = Beer.all
