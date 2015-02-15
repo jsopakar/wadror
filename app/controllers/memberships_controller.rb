@@ -27,10 +27,13 @@ class MembershipsController < ApplicationController
   def create
     @membership = Membership.new(membership_params)
     @membership.user = current_user
-
+    
+    #byebug
     respond_to do |format|
       if @membership.save
-        format.html { redirect_to current_user, notice: "You just joined #{@membership.beer_club.name}" }
+        format.html { redirect_to beer_club_path(@membership.beer_club),
+                      notice: "#{current_user.username}, welcome to the club!" }
+        #format.html { redirect_to current_user, notice: "You just joined #{@membership.beer_club.name}" }
         format.json { render :show, status: :created, location: @membership }
       else
         @beer_clubs = BeerClub.all.reject{ |b| b.members.include? current_user }
