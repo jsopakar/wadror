@@ -5,6 +5,37 @@
   <%= submit_tag "Search" %>
 <% end %>
 
+
+<% if @places %>
+  <table>
+    <thead>
+      <td>id</td>
+      <td>name</td>
+      <td>status</td>
+      <td>street</td>
+      <td>city</td>
+      <td>zip</td>
+      <td>country</td>
+      <td>overall</td>
+    </thead>
+
+    <% @places.each do |place| %>
+    <tr>
+      <td><%=place.id%></td>
+      <td><%= link_to place.name, place_path(place.id) %></td>
+      <td><%=place.status%></td>
+      <td><%=place.street%></td>
+      <td><%=place.city%></td>
+      <td><%=place.zip%></td>
+      <td><%=place.country%></td>
+      <td><%=place.overall%></td>
+    </tr>
+    <% end %>
+
+<% end %>
+
+
+<!--
 <% if @places %>
   <table>
     <thead>
@@ -21,4 +52,4 @@
     <% end %>
   </table>
 <% end %>
-
+-->

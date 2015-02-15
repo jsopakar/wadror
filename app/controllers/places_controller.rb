@@ -1,4 +1,6 @@
 class PlacesController < ApplicationController
+  #before_action :set_place, only: [:show]
+
   def index
   end
 
@@ -18,6 +20,22 @@ class PlacesController < ApplicationController
       end
       render :index
     end
+  end
+
+  def show
+    
+    api_key = "96ce1942872335547853a0bb3b0c24db"
+    url = "http://beermapping.com/webservice/locquery/#{api_key}/"
+    response = HTTParty.get "#{url}#{ERB::Util.url_encode(params[:id])}"
+    parsed = response.parsed_response
+
+    #byebug
+
+    @place = Place.new(parsed['bmp_locations']['location'])
+
+    #byebug
+
+    render :show
   end
 
 end
