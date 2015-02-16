@@ -1,5 +1,4 @@
 require 'rails_helper'
-include OwnTestHelper
 
 describe "Ratings" do
   let!(:brewery) { FactoryGirl.create :brewery, name:"Koff" }

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :styles
+
   resources :memberships
 
   resources :beer_clubs
@@ -17,8 +19,7 @@ Rails.application.routes.draw do
 
   resources :ratings, only: [:index, :new, :create, :destroy]
 
-  resources :places, only:[:index, :show]
-  #get 'places', to: 'places#index'
+  resources :places, only: [:index, :show]
   post 'places', to:'places#search'
 
   root 'breweries#index'

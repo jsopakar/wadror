@@ -73,36 +73,114 @@ RSpec.describe User, :type => :model do
     end
   end
 
-describe "favorite style" do
-    let(:user){FactoryGirl.create(:user) }
+  describe "rated breweries" do
+    let(:user){ FactoryGirl.create(:user) }
 
-    it "has method for determining one" do
-      expect(user).to respond_to(:favorite_style)
+    it "has method for determining the list" do
+      expect(user).to respond_to(:rated_breweries)
     end
 
     it "without ratings does not have one" do
-      expect(user.favorite_style).to eq(nil)
+      expect(user.rated_breweries).to eq([])
     end
 
-    it "is the style of the only rated if one rating" do
-      create_beers_with_ratings_and_style(10, "Lager", user)
+    it "contain all the breweries of rated beers" do
+      brewery = FactoryGirl.create(:brewery)
+      create_beer_with_rating(10, user, brewery)
+      brewery2 = FactoryGirl.create(:brewery)
+      create_beer_with_rating(20, user, brewery2)
 
-      expect(user.favorite_style).to eq("Lager")
+      expect(user.rated_breweries).to match_array([brewery, brewery2])
+    end
+  end
+
+  describe "rated styles" do
+    let(:user){ FactoryGirl.create(:user) }
+
+    it "has method for determining the list" do
+      expect(user).to respond_to(:rated_styles)
     end
 
-    it "is the style with highest average rating if several rated" do
-      create_beers_with_ratings_and_style(10, 20, 15, "Lager", user)
-      create_beers_with_ratings_and_style(35, "IPA", user)
-      create_beers_with_ratings_and_style(25, 20, 15, "Porter", user)
+    it "without ratings does not have one" do
+      expect(user.rated_styles).to eq([])
+    end
 
-      expect(user.favorite_style).to eq("IPA")
+    it "contain all the styles of rated beers" do
+      brewery = FactoryGirl.create(:brewery)
+      style1 = FactoryGirl.create(:style)
+      style2 = FactoryGirl.create(:style, name:"IPA")
+
+      create_beer_with_rating(10, user, brewery, style1)
+      create_beer_with_rating(10, user, brewery, style1)
+      create_beer_with_rating(10, user, brewery, style2)
+
+      expect(user.rated_styles).to match_array([style1, style2])
+    end
+  end
+
+  describe "rating of brewery" do
+    let(:user){ FactoryGirl.create(:user) }
+
+    it "has method for determining it" do
+      expect(user).to respond_to(:rating_of_brewery)
+    end
+
+    it "if one rating, returns the value" do
+      brewery = FactoryGirl.create(:brewery, name:"Koff")
+      create_beer_with_rating(10, user, brewery)
+      brewery2 = FactoryGirl.create(:brewery)
+      create_beer_with_rating(20, user, brewery2)
+
+      expect(user.rating_of_brewery(brewery)).to eq(10)
+    end
+
+    it "if many ratings, returns their average" do
+      brewery = FactoryGirl.create(:brewery, name:"Koff")
+      create_beer_with_rating(10, user, brewery)
+      create_beer_with_rating(20, user, brewery)
+      brewery2 = FactoryGirl.create(:brewery)
+      create_beer_with_rating(30, user, brewery2)
+
+      expect(user.rating_of_brewery(brewery)).to eq(15)
+    end
+  end
+
+  describe "rating of style" do
+    let(:user){ FactoryGirl.create(:user) }
+
+    it "has method for determining it" do
+      expect(user).to respond_to(:rating_of_style)
+    end
+
+    it "if one rating, returns the value" do
+      brewery = FactoryGirl.create(:brewery)
+      style1 = FactoryGirl.create(:style)
+      style2 = FactoryGirl.create(:style, name:"IPA")
+
+      create_beer_with_rating(10, user, brewery, style1)
+      brewery2 = FactoryGirl.create(:brewery)
+      create_beer_with_rating(20, user, brewery2, style2)
+
+      expect(user.rating_of_style(style1)).to eq(10)
+    end
+
+    it "if many ratings, returns their average" do
+      brewery = FactoryGirl.create(:brewery)
+      style1 = FactoryGirl.create(:style)
+      style2 = FactoryGirl.create(:style, name:"IPA")
+
+      create_beer_with_rating(10, user, brewery, style1)
+      create_beer_with_rating(20, user, brewery, style1)
+      create_beer_with_rating(30, user, brewery, style2)
+
+      expect(user.rating_of_style(style1)).to eq(15)
     end
   end
 
   describe "favorite brewery" do
-    let(:user){FactoryGirl.create(:user) }
+    let(:user){ FactoryGirl.create(:user) }
 
-    it "has method for determining one" do
+    it "has method for determining it" do
       expect(user).to respond_to(:favorite_brewery)
     end
 
@@ -110,20 +188,68 @@ describe "favorite style" do
       expect(user.favorite_brewery).to eq(nil)
     end
 
-    it "is the brewery of only rated if one rating" do
+    it "is the brewery of the only rated if only one rating" do
       brewery = FactoryGirl.create(:brewery, name:"Koff")
-      create_beers_with_ratings_and_brewery(10, brewery, user)
+      create_beer_with_rating(10, user, brewery)
 
       expect(user.favorite_brewery).to eq(brewery)
     end
 
-    it "is the brewery with highest average rating if several rated" do
-      plevna = FactoryGirl.create(:brewery, name:"Plevna")
-      create_beers_with_ratings_and_brewery(10, 20, 15, FactoryGirl.create(:brewery), user)
-      create_beers_with_ratings_and_brewery(35, plevna , user)
-      create_beers_with_ratings_and_brewery(25, 20, 15, FactoryGirl.create(:brewery), user)
+    it "is the brewery with the highest rating average" do
+      brewery = FactoryGirl.create(:brewery, name:"Koff")
+      create_beer_with_rating(10, user, brewery)
+      create_beer_with_rating(20, user, brewery)
 
-      expect(user.favorite_brewery).to eq(plevna)
-      end
+      brewery2 = FactoryGirl.create(:brewery, name:"Sierra Nevada")
+      create_beer_with_rating(30, user, brewery2)
+      create_beer_with_rating(25, user, brewery2)
+
+      brewery3 = FactoryGirl.create(:brewery, name:"Hartwall")
+      create_beer_with_rating(15, user, brewery3)
+      create_beer_with_rating(12, user, brewery3)
+
+      expect(user.favorite_brewery).to eq(brewery2)
+    end
+  end
+
+describe "favorite style" do
+    let(:user){ FactoryGirl.create(:user) }
+
+    it "has method for determining it" do
+      expect(user).to respond_to(:favorite_style)
+    end
+
+    it "without ratings does not have one" do
+      expect(user.favorite_style).to eq(nil)
+    end
+
+    it "is the style of the only rated if only one rating" do
+      style = FactoryGirl.create(:style)
+
+      brewery = FactoryGirl.create(:brewery, name:"Koff")
+      create_beer_with_rating(10, user, brewery, style)
+
+      expect(user.favorite_style).to eq(style)
+    end
+
+    it "is the style with the highest rating average" do
+      style1 = FactoryGirl.create(:style)
+      style2 = FactoryGirl.create(:style, name:"IPA")
+      style3 = FactoryGirl.create(:style, name:"Pils")
+
+      brewery = FactoryGirl.create(:brewery, name:"Koff")
+      create_beer_with_rating(10, user, brewery, style1)
+      create_beer_with_rating(25, user, brewery, style2)
+
+      brewery2 = FactoryGirl.create(:brewery, name:"Sierra Nevada")
+      create_beer_with_rating(30, user, brewery2, style1)
+      create_beer_with_rating(20, user, brewery2, style2)
+
+      brewery3 = FactoryGirl.create(:brewery, name:"Hartwall")
+      create_beer_with_rating(15, user, brewery3, style3)
+      create_beer_with_rating(12, user, brewery3, style1)
+
+      expect(user.favorite_style).to eq(style2)
+    end
   end
 end

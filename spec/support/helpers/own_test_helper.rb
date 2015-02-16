@@ -7,35 +7,23 @@ module OwnTestHelper
     click_button('Log in')
   end
 
-  def create_beer_with_rating(score, user)
-    beer = FactoryGirl.create(:beer)
-    FactoryGirl.create(:rating, score:score, beer:beer, user:user)
+  def create_beer_with_rating(score, user, brewery=nil, style=nil)
+    brewery ||= FactoryGirl.create(:brewery)
+    if style.nil?
+      style = FactoryGirl.create(:style)
+    elsif style.is_a? String
+      style = FactoryGirl.create(:style, name: style)
+    end
+
+    beer = FactoryGirl.create(:beer, brewery: brewery, style: style)
+    FactoryGirl.create(:rating, score: score, beer: beer, user: user)
     beer
   end
 
-  def create_beers_with_ratings(*scores, user)
+  def create_beers_with_ratings(*scores, user, brewery, style)
     scores.each do |score|
-      create_beer_with_rating(score, user)
+      create_beer_with_rating(score, user, brewery)
     end
   end
 
-  def create_beers_with_ratings_and_brewery(*scores, brewery, user)
-    create_beers(scores, "Pale Ale", brewery, user)
-  end
-
-  def create_beers_with_ratings_and_style(*scores, style, user)
-    create_beers(scores, style, Brewery.new, user)
-  end
-
-  def create_beers(scores, style, brewery, user)
-    scores.each do |score|
-      create_beer(score, style, brewery, user)
-    end
-  end
-
-  def create_beer(score, style, brewery, user)
-    beer = FactoryGirl.create(:beer, style:style, brewery:brewery)
-    FactoryGirl.create(:rating, score:score,  beer:beer, user:user)
-    beer
-  end
 end
