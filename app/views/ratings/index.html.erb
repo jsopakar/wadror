@@ -8,4 +8,12 @@ Total of <%= @ratings.count %> ratings given
   <% end %>
 </ul>
 
-<%= link_to 'New Rating', new_rating_path if current_user %>
+<h2>Recent ratings</h2>
+
+<ul>
+	<% @recent_ratings.each do | rating | %>
+    <li> <%= rating %> <%= link_to rating.user.username, rating.user %> </li>
+	<% end %>
+</ul>
+
+<%= link_to 'New Rating', new_rating_path, class:"btn btn-primary" if current_user %>
