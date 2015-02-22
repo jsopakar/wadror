@@ -14,7 +14,7 @@
         <td><%= link_to style.name, style %></td>
         <% if current_user %>
           <% if current_user.admin? %>
-            <td><%= link_to 'Destroy', style, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <td><%= link_to 'Destroy', style, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %></td>
           <% end %>
         <% end %>
       </tr>
@@ -24,4 +24,4 @@
 
 <br>
 
-<%= link_to 'New Style', new_style_path %>
+<%= link_to 'New Style', new_style_path, class:'btn btn-primary' %>
