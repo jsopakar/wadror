@@ -1,6 +1,6 @@
 class StylesController < ApplicationController
   before_action :set_style, only: [:show, :edit, :update, :destroy]
-  before_action :ensure_that_is_admin, only: [:destroy]
+  before_action :ensure_that_admin, only: [:destroy]
 
   # GET /styles
   # GET /styles.json
@@ -55,7 +55,6 @@ class StylesController < ApplicationController
   # DELETE /styles/1
   # DELETE /styles/1.json
   def destroy
-    #byebug
     @style.destroy
     respond_to do |format|
       format.html { redirect_to styles_url, notice: 'Style was successfully destroyed.' }

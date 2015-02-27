@@ -61,8 +61,7 @@ end
 gem 'bcrypt', '~> 3.1.7'
 gem 'httparty'
 
-
-gem 'bootstrap-sass',  '~> 3.2.0'
+gem 'bootstrap-sass'
 group :development do
   gem 'rails_layout'
 end

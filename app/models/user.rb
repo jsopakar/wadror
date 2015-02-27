@@ -15,52 +15,60 @@ class User < ActiveRecord::Base
 
   validates :password, format: { with: /\d.*[A-Z]|[A-Z].*\d/,  message: "has to contain one number and one upper case letter" }
 
+  def self.most_active(n)
+    sorted_by_rating_in_desc_order = User.all.select{ |u| u.ratings.any? }.sort_by{ |u| -(u.ratings.count) }
+    sorted_by_rating_in_desc_order[0..(n-1)]
+  end
+
   def favorite_beer
     return nil if ratings.empty?
     ratings.order(score: :desc).limit(1).first.beer
   end
 
-  def favorite_brewery
+  def favorite(category)
     return nil if ratings.empty?
-    brewery_ratings = rated_breweries.inject([]) do |ratings, brewery|
-      ratings << {
-        name: brewery,
-        rating: rating_of_brewery(brewery) }
+
+    categroy_ratings = rated(category).inject([]) do |set, item|
+      set << {
+        item: item,
+        rating: rating_of(category, item) }
     end
 
-    brewery_ratings.sort_by { |brewery| brewery[:rating] }.reverse.first[:name]
+    categroy_ratings.sort_by { |item| item[:rating] }.last[:item]
+  end
+
+  def favorite_brewery
+    favorite :brewery
   end
 
   def favorite_style
-    return nil if ratings.empty?
-    style_ratings = rated_styles.inject([]) do |ratings, style|
-      ratings << {
-        name: style,
-        rating: rating_of_style(style) }
+    favorite :style
+  end
+
+  def rated(category)
+    ratings.map{ |r| r.beer.send(category) }.uniq
+  end
+
+  def rating_of(category, item)
+    ratings_of_item = ratings.select do |r|
+      r.beer.send(category) == item
     end
-
-    style_ratings.sort_by { |style| style[:rating] }.reverse.first[:name]
-  end
-
-  def rated_breweries
-    ratings.map{ |r| r.beer.brewery }.uniq
-  end
-
-  def rated_styles
-    ratings.map{ |r| r.beer.style }.uniq
-  end
-
-  def rating_of_brewery(brewery)
-    ratings_of_brewery = ratings.select do |r|
-      r.beer.brewery == brewery
-    end
-    ratings_of_brewery.map(&:score).sum / ratings_of_brewery.count
+    ratings_of_item.map(&:score).sum / ratings_of_item.count
   end
 
   def rating_of_style(style)
-    ratings_of_style = ratings.select do |r|
-      r.beer.style == style
-    end
-    ratings_of_style.map(&:score).sum / ratings_of_style.count
+    rating_of :style, style
+  end
+
+  def rating_of_brewery(brewery)
+    rating_of :brewery, brewery
+  end
+
+  def rated_breweries
+    rated :brewery
+  end
+
+  def rated_styles
+    rated :style
   end
 end
