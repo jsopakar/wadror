@@ -1,6 +1,6 @@
 class BreweriesController < ApplicationController
   before_action :set_brewery, only: [:show, :edit, :update, :destroy]
-  before_action :ensure_that_signed_in, except: [:index, :show]
+  before_action :ensure_that_signed_in, except: [:index, :show, :list]
   before_action :ensure_that_admin, only: [:destroy]
 
   # GET /breweries
@@ -8,6 +8,7 @@ class BreweriesController < ApplicationController
   def index
     @active_breweries = Brewery.active
     @retired_breweries = Brewery.retired
+    @all_breweries = Brewery.all
 
     order = params[:order] || 'name'
 
@@ -66,6 +67,10 @@ class BreweriesController < ApplicationController
         format.json { render json: @brewery.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def list
+
   end
 
   # DELETE /breweries/1

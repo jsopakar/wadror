@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   get 'beerlist', to: 'beers#list'
   get 'ngbeerlist', to:'beers#nglist'
 
+  get 'brewerylist', to:'breweries#list'
+
   root 'breweries#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
