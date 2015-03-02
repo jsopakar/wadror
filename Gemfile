@@ -69,3 +69,5 @@ group :development do
 end
 
 gem 'jquery-turbolinks'
+
+gem 'rack-mini-profiler'
