@@ -1,6 +1,6 @@
 json.array!(@beers) do |beer|
   json.extract! beer, :id, :name
-  byebug
+  #byebug
   json.style do
     json.name beer.style.name
   end
